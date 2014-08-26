@@ -9,9 +9,11 @@
 			[clojure.tools.nrepl.debug :as debug]
             [clojure.tools.nrepl.transport :as t])
   (:import clojure.tools.nrepl.transport.Transport
-           (System.IO TextReader TextWriter StringReader StreamWriter StringWriter)    ;DM: java.io PipedReader PipedWriter Reader Writer PrintWriter StringReader 
-           clojure.lang.LineNumberingTextReader                                        ;DM: clojure.lang.LineNumberingPushbackReader
-           ))                                                                          ;DM: java.util.concurrent.LinkedBlockingQueue
+           (System.IO TextReader TextWriter StringReader StreamWriter StringWriter)
+           (System.Collections.Generic |List`1[System.Object]|)
+           
+           clojure.lang.LineNumberingTextReader                                
+           ))                                                                  
 
 (def ^{:private true} sessions (atom {}))
 
@@ -133,7 +135,7 @@
    {:status :need-input} message on the provided transport so the client/user
    can provide content to be read."
   [session-id transport]
-  (let [input-queue (|System.Collections.Concurrent.BlockingCollection`1[System.Object]|.)            ;DM: LinkedBlockingQueue.
+  (let [input-queue (|System.Collections.Generic.List`1[System.Object]|.)       
         request-input (fn []
 		                #_(debug/prn-thread "Request input")
                         (cond (> (.Count input-queue) 0)                                ;DM: .size

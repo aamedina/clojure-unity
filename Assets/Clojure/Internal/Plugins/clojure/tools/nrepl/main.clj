@@ -10,6 +10,4 @@
 (defn -main
   [& args]
   (ack/reset-ack-port!)
-  (let [server (server/start-server
-                :ack-port (:port @ack-server))]
-    (println "server started: " server)))
+  (println (server/start-server :ack-port (:port @ack-server))))

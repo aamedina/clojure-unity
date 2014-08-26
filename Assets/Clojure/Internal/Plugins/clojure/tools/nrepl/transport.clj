@@ -1,20 +1,17 @@
-
 (ns ^{:author "Chas Emerick"}
-     clojure.tools.nrepl.transport
+  clojure.tools.nrepl.transport
   (:require [clojure.tools.nrepl.bencode :as be]
-            [clojure.clr.io :as io]                                       ;DM: clojure.java.io
+            [clojure.clr.io :as io]
 			[clojure.tools.nrepl.debug :as debug]
-			[clojure.tools.nrepl.sync-channel :as sc]                     ;DM: Added
-            (clojure walk set))
+			[clojure.tools.nrepl.sync-channel :as sc] 
+      (clojure walk set))
   (:use [clojure.tools.nrepl.misc :only (returning uuid)])  
   (:refer-clojure :exclude (send))
-  (:import (System.IO  Stream  EndOfStreamException)                      ;DM: (java.io InputStream OutputStream PushbackInputStream
-           (clojure.lang PushbackInputStream PushbackTextReader)          ;DM:  PushbackReader IOException EOFException)
-           (System.Net.Sockets Socket SocketException)                    ;DM: (java.net Socket SocketException)
-           (System.Collections.Concurrent                                 ;DM: (java.util.concurrent SynchronousQueue LinkedBlockingQueue
-               |BlockingCollection`1[System.Object]|)                     ;DM: BlockingQueue TimeUnit)
-;		   clojure.tools.nrepl.transport.Transport                        ;DM: Added
-           clojure.lang.RT ))
+  (:import (System.IO  Stream  EndOfStreamException)
+           (clojure.lang PushbackInputStream PushbackTextReader)
+           (System.Net.Sockets Socket SocketException)
+           (System.Collections.Generic |List`1[System.Object]|)
+           clojure.lang.RT))
 
 (defprotocol Transport
   "Defines the interface for a wire protocol implementation for use
@@ -173,16 +170,16 @@
   (send transport {:out (str ";; Clojure " (clojure-version)
                              \newline "user=> ")}))
 
-(deftype QueueTransport [^|System.Collections.Concurrent.BlockingCollection`1[System.Object]| in 
-                         ^|System.Collections.Concurrent.BlockingCollection`1[System.Object]| out]           ;DM: ^BlockingQueue
+(deftype QueueTransport [^|System.Collections.Generic.List`1[System.Object]| in
+                         ^|System.Collections.Generic.List`1[System.Object]| out]
   clojure.tools.nrepl.transport.Transport
-  (send [this msg] (.Add out msg) this)                                            ;DM: .put
-  (recv [this] (.Take in))                                                         ;DM: .take
-  (recv [this timeout] (let [x nil] (.TryTake in (by-ref x) (int timeout)) x)))    ;DM: .poll, removed TimeUnit/MILLISECONDS, added (int .), let, ref
+  (send [this msg] (.Add out msg) this)
+  (recv [this] (.Take in))
+  (recv [this timeout] (let [x nil] (.TryTake in (by-ref x) (int timeout)) x)))
 
 (defn piped-transports
   "Returns a pair of Transports that read from and write to each other."
   []
-  (let [a (|System.Collections.Concurrent.BlockingCollection`1[System.Object]|.)                                                    ;DM: LinkedBlockingQueue      
-        b (|System.Collections.Concurrent.BlockingCollection`1[System.Object]|.)]                                                   ;DM: LinkedBlockingQueue  
+  (let [a (|System.Collections.Generic.List`1[System.Object]|.)
+        b (|System.Collections.Generic.List`1[System.Object]|.)]
     [(QueueTransport. a b) (QueueTransport. b a)]))

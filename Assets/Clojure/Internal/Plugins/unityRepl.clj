@@ -1,6 +1,7 @@
 (ns unityRepl
   (:refer-clojure :exclude [with-bindings])
-  (:require [clojure.main :as main]))
+  (:require [clojure.main :as main]
+            [clojure.tools.nrepl.main :as nrepl]))
 
 (def
   ^{:doc "The form in injection is evaluated prior to each evaluation of a form in the REPL, in a try-catch."}

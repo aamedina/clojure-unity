@@ -24,7 +24,7 @@
     :doc "Returns a new seq where x is the first element and seq is
     the rest."
     :added "1.0"
-	:static true}
+  :static true}
 
  cons (fn* ^:static cons [x seq] (. clojure.lang.RT (cons x seq))))
 
@@ -311,8 +311,8 @@
                     m))
               m (conj (if (meta name) (meta name) {}) m)]
           (list 'def (with-meta name m)
-		        ;;todo - restore propagation of fn name
-				;;must figure out how to convey primitive hints to self calls first
+            ;;todo - restore propagation of fn name
+        ;;must figure out how to convey primitive hints to self calls first
                 (cons `fn fdecl) ))))
 
 (. (var defn) (setMacro))       
@@ -725,7 +725,7 @@
     
 (defmacro if-not
   "Evaluates test. If logical false, evaluates and returns then expr, 
-  otherwise else expr, if supplied, else nil."  
+  otherwise else expr, if supplied, else nil."
   {:added "1.0"}
   ([test then] `(if-not ~test ~then nil))
   ([test then else]
@@ -1337,7 +1337,7 @@
   [n]
   (or (instance? Int32 n)      (instance? UInt32 n)     ;;; Integer -> Int32, added UInt32
       (instance? Int64 n)      (instance? UInt64 n)     ;;; Long -> Int64, added UInt64
-	  (instance? clojure.lang.BigInt n)
+    (instance? clojure.lang.BigInt n)
       (instance? BigInteger n) (instance? Char n)       ;;; added Char test
       (instance? Int16 n)      (instance? UInt16 n)     ;;; Short -> Int16, added UInt16
       (instance? Byte n)  (instance? SByte n)))         ;;; Added SByte test
@@ -1654,7 +1654,7 @@
     (let [options   (apply hash-map options)
           default   (get options :default :default)
           hierarchy (get options :hierarchy #'global-hierarchy)]
-	 (check-valid-options options :default :hierarchy)
+   (check-valid-options options :default :hierarchy)
      `(let [v# (def ~mm-name)]
          (when-not (and (.hasRoot v#) (instance? clojure.lang.MultiFn (deref v#)))
            (def ~(with-meta mm-name m)
@@ -1709,7 +1709,7 @@
   
 ;;;;;;;;; var stuff
 
-(defmacro ^{:private true} assert-args 
+(defmacro ^{:private true} assert-args
   [& pairs]
   `(do (when-not ~(first pairs)
          (throw (ArgumentException.                            ;;;IllegalArgumentException.
@@ -2149,14 +2149,14 @@
 
   :min-history (default 0)
   :max-history (default 10)
-  
+
   If metadata-map is supplied, it will become the metadata on the
   ref. validate-fn must be nil or a side-effect-free fn of one
   argument, which will be passed the intended new state on any state
   change. If the new state is unacceptable, the validate-fn should
   return false or throw an exception. validate-fn will be called on
   transaction commit, when all refs have their final values.
-  
+
   Normally refs accumulate history dynamically as needed to deal with
   read demands.  If you know in advance you will need a history you can
   set :min-history to ensure that it will be available when first needed (instead
@@ -2768,12 +2768,12 @@
   [f & maps]
   (when (some identity maps)
     (let [merge-entry (fn [m e]
-			(let [k (key e) v (val e)]
-			  (if (contains? m k)
-			    (assoc m k (f (get m k) v)) 
-			    (assoc m k v))))
+      (let [k (key e) v (val e)]
+        (if (contains? m k)
+          (assoc m k (f (get m k) v)) 
+          (assoc m k v))))
           merge2 (fn [m1 m2]
-		   (reduce1 merge-entry (or m1 {}) (seq m2)))]
+       (reduce1 merge-entry (or m1 {}) (seq m2)))]
       (reduce1 merge2 maps))))
 
 
@@ -3133,7 +3133,7 @@
     (persistent! (reduce1 conj! (transient to) from))
     (reduce1 conj to from)))
 
-(defmacro import 
+(defmacro import
   "import-list => (package-symbol class-name-symbols*)
 
   For each name in class-name-symbols, adds a mapping from name to the
@@ -3323,7 +3323,7 @@
   "Returns true if n is a floating point number"
   {:added "1.0"
    :static true}
-  [n]   
+  [n]
   (or (instance? Double n)
       (instance? Single n)))     ;;; Float
 
@@ -3343,7 +3343,7 @@
        (instance? clojure.lang.BigInt x) x
        (instance? BigInteger x) (clojure.lang.BigInt/fromBigInteger x)
        (decimal? x) (bigint (.ToBigInteger ^BigDecimal x))
-	   (float? x) (bigint (BigDecimal/Create (double x)))                        ;;; (. BigDecimal valueOf (double x))
+     (float? x) (bigint (BigDecimal/Create (double x)))                        ;;; (. BigDecimal valueOf (double x))
        (ratio? x) (bigint (.BigIntegerValue ^clojure.lang.Ratio x))
        (number? x) (clojure.lang.BigInt/valueOf (long x))   (string? x) (bigint (BigInteger/Parse ^String x))   ;; DM: Added string clause
        :else (bigint (BigInteger. x))))
@@ -3355,9 +3355,9 @@
    :static true}
   [x] (cond
        (instance? BigInteger x) x
-	   (instance? clojure.lang.BigInt x) (.toBigInteger ^clojure.lang.BigInt x)
+     (instance? clojure.lang.BigInt x) (.toBigInteger ^clojure.lang.BigInt x)
        (decimal? x) (.ToBigInteger ^BigDecimal x)                                ;;; toBigInteger
-	   (float? x) (.ToBigInteger (BigDecimal/Create (double x)))                 ;;; (.toBigInteger (. BigDecimal valueOf (double x)))
+     (float? x) (.ToBigInteger (BigDecimal/Create (double x)))                 ;;; (.toBigInteger (. BigDecimal valueOf (double x)))
        (ratio? x) (.BigIntegerValue ^clojure.lang.Ratio x)
        (number? x) (BigInteger/Create (long x))      (string? x) (bigint (BigInteger/Parse ^String x))          ;;;(BigInteger/valueOf (long x))  DM: Added string clause
        :else (BigInteger. x)))
@@ -3375,7 +3375,7 @@
        (instance? BigInteger x) (BigDecimal/Create ^BigInteger x)                         ;;; (BigDecimal. ^BigInteger x)
        (number? x) (BigDecimal/Create (long x))                                           ;;; (BigDecimal/valueOf (long x))
        :else  (BigDecimal/Create x)))                                                     ;;; (BigDecimal. x)))
-	   
+     
 (def ^:dynamic ^{:private true} print-initialized false)
 
 (defmulti print-method (fn [x writer]
@@ -4070,7 +4070,7 @@
                      pmap
                      (fn [bvec b v]
                        (let [gmap (gensym "map__")
-					         gmapseq (with-meta gmap {:tag 'clojure.lang.ISeq})
+                   gmapseq (with-meta gmap {:tag 'clojure.lang.ISeq})
                              defaults (:or b)]
                          (loop [ret (-> bvec (conj gmap) (conj v)
                                         (conj gmap) (conj `(if (seq? ~gmap) (clojure.lang.PersistentHashMap/create (seq ~gmapseq)) ~gmap))
@@ -5808,11 +5808,11 @@
   metadata from the name symbol.  Returns the var."
   {:added "1.0"
    :static true}
-  ([ns ^clojure.lang.Symbol name] 
+  ([ns ^clojure.lang.Symbol name]
      (let [v (clojure.lang.Var/intern (the-ns ns) name)]
        (when (meta name) (.setMeta v (meta name)))
        v))
-  ([ns name val] 
+  ([ns name val]
      (let [v (clojure.lang.Var/intern (the-ns ns) name val)]
        (when (meta name) (.setMeta v (meta name)))
        v)))
@@ -5868,7 +5868,7 @@
   (let [gpred (gensym "pred__")
         gexpr (gensym "expr__")
         emit (fn emit [pred expr args]
-               (let [[[a b c :as clause] more] 
+               (let [[[a b c :as clause] more]
                        (split-at (if (= :>> (second args)) 3 2) args)
                        n (count clause)]
                  (cond
@@ -6496,7 +6496,7 @@
                                                                             ;;;                                          (clojure.lang.RT/baseLoader) 
                                                                             ;;;                                          "clojure/version.properties")]
                                                                             ;;;               (doto (new java.util.Properties) 
-			                                                                ;;;                 (.load version-stream))
+                                                                      ;;;                 (.load version-stream))
       version-string (.getProperty properties "version")
       [_ major minor incremental qualifier snapshot]
       (re-matches
@@ -6545,7 +6545,7 @@
   (let [d (clojure.lang.CountDownLatch. 1)                       ;;; java.util.concurrent.CountDownLatch.
         v (atom d)]
     (reify 
-	 clojure.lang.IDeref
+   clojure.lang.IDeref
        (deref [_] (.Await d) @v)                                ;;; .await
      clojure.lang.IBlockingDeref
        (deref
@@ -6555,12 +6555,12 @@
           timeout-val))  
      clojure.lang.IPending
       (isRealized [this]
-	    (zero? (.Count d)))    ;;; .getCount
-	 clojure.lang.IFn
+      (zero? (.Count d)))    ;;; .getCount
+   clojure.lang.IFn
       (invoke 
-	   [this x]
+     [this x]
        (when (and (pos? (.Count d)) ;;; getCount
-	              (compare-and-set! v d x))
+                (compare-and-set! v d x))
          (.CountDown d) ;;; countDown
          this)))))
         
